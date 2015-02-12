@@ -12,6 +12,14 @@ public:
 	void add_to_front(const T& data);
 	void add_to_back(const T& data);
 
+	void delete_data(int pos);
+
+	bool is_empty();
+	bool is_full();
+
+	int	size();
+	const T& get_data(int pos);
+
 	void clear();
 	void display();
 

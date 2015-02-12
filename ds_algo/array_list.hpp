@@ -2,7 +2,7 @@
 
 template <typename T>
 array_list<T>::array_list(void) {
-	this->length = 0;
+	length = 0;
 }
 
 template <typename T>
@@ -12,32 +12,72 @@ array_list<T>::~array_list(void) {
 
 template <typename T>
 void array_list<T>::add_to_front(const T& data) {
-	for (int i=this->length; i>=0; --i) {
-		this->list[i+1] = this->list[i];
+	for (int i=length; i>=0; --i) {
+		list[i+1] = list[i];
 	}
 
-	this->list[0] = data;
-	++this->length;
+	list[0] = data;
+	++length;
 }
 
 template <typename T>
 void array_list<T>::add_to_back(const T& data) {
-	this->list[this->length] = data;
-	++this->length;
+	list[length] = data;
+	++length;
+}
+
+template <typename T>
+void array_list<T>::delete_data(int pos) {
+	list[pos] = 0;
+
+	if (pos != length) {
+		for (int i=pos+1; i<length; ++i) {
+			list[i-1] = list[i];
+		}
+		list[length] = 0;
+	}
+
+	--length;
+}
+
+template <typename T>
+bool array_list<T>::is_empty() {
+	if (length != 0)
+		return false;
+
+	return true;
+}
+
+template <typename T>
+bool array_list<T>::is_full() {
+	if (length != MAX_SIZE)
+		return false;
+
+	return true;
+}
+
+template <typename T>
+int	array_list<T>::size() {
+	return length;
+}
+
+template <typename T>
+const T& array_list<T>::get_data(int pos) {
+	return list[pos];
 }
 
 template <typename T>
 void array_list<T>::clear() {
 	for (int i=0; i<MAX_SIZE; ++i) {
-		this->list[i] = 0;
+		list[i] = 0;
 	}
 
-	this->length = 0;
+	length = 0;
 }
 
 template <typename T>
 void array_list<T>::display() {
-	for (int i=0; i<this->length; ++i) {
-		std::cout << this->list[i] << std::endl;
+	for (int i=0; i<length; ++i) {
+		std::cout << list[i] << std::endl;
 	}
 }
