@@ -26,7 +26,6 @@ public:
 	void remove_data(const T& data);
 
 	bool is_empty();
-	bool is_full();
 
 	int	size();
 	const T& get_data(int pos);

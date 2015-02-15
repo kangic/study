@@ -22,6 +22,16 @@ void linked_list<T>::insert_data(const T& data) {
 }
 
 template<typename T>
+void linked_list<T>::remove_data(const T& data) {
+
+}
+
+template<typename T>
+bool linked_list<T>::is_empty() {
+	return length == 0;
+}
+
+template<typename T>
 node<T>* linked_list<T>::create_list_node(const T& data) {
 	node<T>* new_node = new node<T>(data);
 
