@@ -7,28 +7,32 @@ int main(void) {
 
 	list.clear();
 
-	/*
-	list.add_to_back(100);
-	list.add_to_back(30);
-	list.add_to_front(40);
+	list.insert_data(100);
+	list.insert_data(30);
+	list.insert_data(40);
+	list.insert_data(50);
+	list.insert_data(10);
+	list.insert_data(20);
+	list.insert_data(80);
+	list.insert_data(70);
 
 	std::cout << "length = " << list.size() << std::endl;
 	
-	list.add_to_front(70);
-	list.add_to_back(80);
-
-	std::cout << "length = " << list.size() << std::endl;
-
 	list.display();
 
-	int del_num = list.get_data(3);
-	list.delete_data(3);
-	std::cout << "delete = " << del_num << std::endl;
+	std::cout << "get_data(4) = " << list.get_data(4) << std::endl;
+
+	list.remove_data(30);
 
 	std::cout << "length = " << list.size() << std::endl;
+	
+	list.display();
+
+	list.clear();
+
+	std::cout << "clear..length = " << list.size() << std::endl;
 
 	list.display();
-	*/
 
 	return 0;
 }
