@@ -6,12 +6,8 @@
 template<typename T>
 class node {
 public:
-	node(const T& _data) {
-		data = _data;
-		next = NULL;
-	}
+	node() {}
 
-private:
 	T data;
 	node* next;
 };
@@ -39,7 +35,6 @@ private:
 	// vars
 private:
 	node<T>* head;
-	node<T>* tail;
 
 	int length;
 };
