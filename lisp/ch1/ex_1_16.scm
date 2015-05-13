@@ -1,0 +1,6 @@
+(define (fast-expt b n)
+  (define (fast-expt-i a b count)
+    (cond ((= count 0) a)
+	  ((even? count) (fast-expt-i a (square b) (/ count 2)))
+	  (else (fast-expt-i (* a b) b (- count 1)))))
+  (fast-expt-i 1 b n))
