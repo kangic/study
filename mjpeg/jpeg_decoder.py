@@ -43,6 +43,29 @@ SOF_SAMPLING_PRECISION = 0
 SOF_IMG_H = 0
 SOF_IMG_W = 0
 
+Y_COMPONENT_ID = 1
+Y_SAMPLING_FREQ_W = 0
+Y_SAMPLING_FREQ_H = 0
+Y_QUANT_TABLE_ID = 0
+Cb_COMPONENT_ID = 2
+Cb_SAMPLING_FREQ_W = 0
+Cb_SAMPLING_FREQ_H = 0
+Cb_QUANT_TABLE_ID = 0
+Cr_COMPONENT_ID = 3
+Cr_SAMPLING_FREQ_W = 0
+Cr_SAMPLING_FREQ_H = 0
+Cr_QUANT_TABLE_ID = 0
+
+# DHT Marker
+DHT_MARKER = [0xff, 0xc4]
+DHT_MARKER_SIZE = 2
+
+DHT_DATA_LENGTH = 0
+
+HUFFMAN_TABLE = [[], [], [], []]
+
+CODELENGTH_COUNTER_SIZE = 16
+
 # header file의 magic number와 비교하는 함수
 def check_header(f, magic_bytes, magic_len):
     check_bytes = f.read(magic_len)
@@ -60,6 +83,11 @@ def get_short_value(f):
     read_bytes = f.read(2)
     return int(ord(read_bytes[0])) * 256 + int(ord(read_bytes[1]))
 
+def get_high(byte):
+    return (byte & 0b11110000) >> 4
+
+def get_low(byte):
+    return byte & 0b00001111
 
 if __name__ == '__main__':
     filename = sys.argv[1]
@@ -128,7 +156,7 @@ if __name__ == '__main__':
 
     for table_idx in range(0, 4):
         # check DQT marker
-        print "check DQT marker...",
+        print "check DQT marker(%d)..." % table_idx,
         if check_header(f, DQT_MARKER, DQT_MARKER_SIZE) == False:
             print "fail - file offset : ", f.tell()
             f.seek(f.tell() - DQT_MARKER_SIZE)
@@ -142,8 +170,8 @@ if __name__ == '__main__':
 
         # get table info
         table_info_val = get_char_value(f)
-        table_size = table_info_val & 0b11110000
-        table_id =  table_info_val & 0b00001111 
+        table_size = get_high(table_info_val)
+        table_id =  get_low(table_info_val)
         print "table size : ", table_size, ", table id : ", table_id
 
         for idx in range(0, DQT_DATA_LENGTH - 3):
@@ -182,6 +210,52 @@ if __name__ == '__main__':
     SOF_IMG_H = get_short_value(f)
     SOF_IMG_W = get_short_value(f)
     print "SOF Image Size = %dx%d" % (SOF_IMG_W, SOF_IMG_H)
+
+    no_fo_components = get_char_value(f)
+    print "no fo components = ", no_fo_components
+
+    Y_COMPONENT_ID = get_char_value(f)
+    sampling_val = get_char_value(f)
+    Y_SAMPLING_FREQ_W = get_high(sampling_val)
+    Y_SAMPLING_FREQ_H = get_low(sampling_val)
+    Y_QUANT_TABLE_ID = get_char_value(f)
+
+    print "Y Component Info : Sampling(w) = %d, Sampling(h) = %d, QUANT TABLE ID = %d" % (Y_SAMPLING_FREQ_W, Y_SAMPLING_FREQ_H, Y_QUANT_TABLE_ID)
+
+    Cb_COMPONENT_ID = get_char_value(f)
+    sampling_val = get_char_value(f)
+    Cb_SAMPLING_FREQ_W = get_high(sampling_val)
+    Cb_SAMPLING_FREQ_H = get_low(sampling_val)
+    Cb_QUANT_TABLE_ID = get_char_value(f)
+
+    print "Cb Component Info : Sampling(w) = %d, Sampling(h) = %d, QUANT TABLE ID = %d" % (Cb_SAMPLING_FREQ_W, Cb_SAMPLING_FREQ_H, Cb_QUANT_TABLE_ID)
+
+    Cr_COMPONENT_ID = get_char_value(f)
+    sampling_val = get_char_value(f)
+    Cr_SAMPLING_FREQ_W = get_high(sampling_val)
+    Cr_SAMPLING_FREQ_H = get_low(sampling_val)
+    Cr_QUANT_TABLE_ID = get_char_value(f)
+
+    print "Cr Component Info : Sampling(w) = %d, Sampling(h) = %d, QUANT TABLE ID = %d" % (Cr_SAMPLING_FREQ_W, Cr_SAMPLING_FREQ_H, Cr_QUANT_TABLE_ID)
+
+    # DHT
+    for table_idx in range(0, 4):
+        print "check DHT marker(%d)..." % table_idx,
+        
+        if check_header(f, DHT_MARKER, DHT_MARKER_SIZE) != True:
+            print "fail - file offset : ", f.tell()
+            f.seek(f.tell() - DHT_MARKER_SIZE)
+            print "revert to file offset : ", f.tell()
+            break
+        print "success"
+
+        DHT_DATA_LENGTH = get_short_value(f)
+        print "DHT_DATA_LENGTH = ", DHT_DATA_LENGTH
+
+        table_id = get_char_value(f)
+        table_class = get_high(table_id)
+        real_table_id = get_low(table_id)
+        print "table_class = %d, table_id = %d" % (table_class, real_table_id)
 
 
 
